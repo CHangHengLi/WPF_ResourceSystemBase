@@ -1,6 +1,7 @@
 # WPF 主题切换演示项目
 
 这个项目演示了一个完整的WPF主题系统实现，支持动态切换亮色/暗色主题。
+![image](https://github.com/user-attachments/assets/a5676bc9-fbf1-4cb1-a8a1-6f5054fc676e)
 
 ## 主要特性
 
