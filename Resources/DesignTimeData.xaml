@@ -1,0 +1,13 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+    <!-- 设计时数据样本文件 -->
+    <x:Array x:Key="SampleData" Type="{x:Type sys:String}">
+        <sys:String>设计时数据项 - 这是第一项</sys:String>
+        <sys:String>设计时数据项 - 这是第二项</sys:String>
+        <sys:String>设计时数据项 - 这是第三项</sys:String>
+        <sys:String>设计时数据项 - 这是第四项</sys:String>
+        <sys:String>设计时数据项 - 这是第五项</sys:String>
+        <sys:String>设计时数据项 - 这是第六项</sys:String>
+    </x:Array>
+</ResourceDictionary> 

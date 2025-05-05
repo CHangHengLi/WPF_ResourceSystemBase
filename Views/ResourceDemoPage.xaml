@@ -1,0 +1,168 @@
+<Page x:Class="WPFThemingDemo.Views.ResourceDemoPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WPFThemingDemo.Views"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="800"
+      Title="资源系统演示">
+
+    <!-- 页面级资源 -->
+    <Page.Resources>
+        <SolidColorBrush x:Key="TextBrush" Color="Blue" />
+        <SolidColorBrush x:Key="PageSpecificBrush" Color="Purple" />
+        
+        <!-- 设计时数据示例 -->
+        <x:Array x:Key="DesignTimeItems" Type="{x:Type system:String}" 
+                 xmlns:system="clr-namespace:System;assembly=mscorlib">
+            <system:String>设计时项目1</system:String>
+            <system:String>设计时项目2</system:String>
+            <system:String>设计时项目3</system:String>
+        </x:Array>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <StackPanel Margin="20">
+            <!-- 顶部添加返回按钮和标题的布局 -->
+            <Grid Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- 返回按钮 -->
+                <Button x:Name="BackButton" Content="返回主题演示" 
+                        Style="{DynamicResource BaseButtonStyle}" 
+                        Click="BackButton_Click"
+                        Margin="0,0,10,0"/>
+                
+                <!-- 页面标题 -->
+                <Label Grid.Column="1" Content="WPF资源系统示例" 
+                       Style="{DynamicResource HeaderLabelStyle}" 
+                       VerticalAlignment="Center"/>
+            </Grid>
+            
+            <!-- 1. 资源查找顺序示例 -->
+            <GroupBox Header="1. 资源查找顺序" Style="{DynamicResource GroupBoxStyle}" Margin="0,0,0,20">
+                <StackPanel Margin="10">
+                    <TextBlock Text="资源查找遵循：元素级 > 父元素级 > 窗口级 > 应用程序级" 
+                             FontWeight="Bold" Margin="0,0,0,10"/>
+                    
+                    <StackPanel>
+                        <StackPanel.Resources>
+                            <!-- 面板级资源，会覆盖页面级同名资源 -->
+                            <SolidColorBrush x:Key="TextBrush" Color="Green" />
+                        </StackPanel.Resources>
+                        
+                        <!-- 使用面板级资源 -->
+                        <TextBlock Text="这个文本使用面板级资源（绿色）" 
+                                 Foreground="{StaticResource TextBrush}" Margin="5" />
+                        
+                        <Border BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="5">
+                            <Border.Resources>
+                                <!-- 边框级资源，会覆盖面板级同名资源 -->
+                                <SolidColorBrush x:Key="TextBrush" Color="Red" />
+                            </Border.Resources>
+                            
+                            <!-- 使用边框级资源 -->
+                            <TextBlock Text="这个文本使用边框级资源（红色）" 
+                                     Foreground="{StaticResource TextBrush}" />
+                        </Border>
+                        
+                        <!-- 再次使用面板级资源 -->
+                        <TextBlock Text="这个文本再次使用面板级资源（绿色）" 
+                                 Foreground="{StaticResource TextBrush}" Margin="5" />
+                        
+                        <!-- 使用页面级特定资源 -->
+                        <TextBlock Text="这个文本使用页面级特定资源（紫色）" 
+                                 Foreground="{StaticResource PageSpecificBrush}" Margin="5" />
+                        
+                        <!-- 使用应用程序级资源 -->
+                        <TextBlock Text="这个文本使用应用程序级资源（当前主题文本色）" 
+                                 Foreground="{StaticResource PrimaryTextBrush}" Margin="5" />
+                    </StackPanel>
+                </StackPanel>
+            </GroupBox>
+            
+            <!-- 2. 资源作用域示例 -->
+            <GroupBox Header="2. 资源作用域" Style="{DynamicResource GroupBoxStyle}" Margin="0,0,0,20">
+                <StackPanel Margin="10">
+                    <TextBlock Text="资源作用域决定资源可以被哪些元素访问" 
+                             FontWeight="Bold" Margin="0,0,0,10"/>
+                    
+                    <StackPanel x:Name="ScopeDemo">
+                        <StackPanel.Resources>
+                            <SolidColorBrush x:Key="LocalBrush" Color="Orange" />
+                        </StackPanel.Resources>
+                        
+                        <!-- 可以访问LocalBrush -->
+                        <TextBlock Text="可以访问本地资源（橙色）" 
+                                 Foreground="{StaticResource LocalBrush}" Margin="5" />
+                        
+                        <Border Padding="10" Margin="5" Background="#FAFAFA">
+                            <!-- 子元素也可以访问LocalBrush -->
+                            <TextBlock Text="子元素可以访问父元素资源（橙色）" 
+                                     Foreground="{StaticResource LocalBrush}" />
+                        </Border>
+                    </StackPanel>
+                    
+                    <!-- 此元素不能访问LocalBrush -->
+                    <TextBlock Text="此元素不能访问上面StackPanel的本地资源（使用应用程序资源）" 
+                             Foreground="{DynamicResource PrimaryTextBrush}" Margin="5" />
+                    
+                    <Button x:Name="AccessResourceButton" Content="尝试在代码中访问资源" 
+                          Style="{DynamicResource BaseButtonStyle}" Margin="5,10"
+                          Click="AccessResourceButton_Click"/>
+                </StackPanel>
+            </GroupBox>
+            
+            <!-- 3. 设计时资源示例 -->
+            <GroupBox Header="3. 设计时资源" Style="{DynamicResource GroupBoxStyle}" Margin="0,0,0,20">
+                <StackPanel Margin="10">
+                    <TextBlock Text="设计时资源允许在设计器中看到数据，而不影响运行时" 
+                             FontWeight="Bold" Margin="0,0,0,10"/>
+                    
+                    <!-- 设计时数据绑定示例 -->
+                    <ListBox Height="100" Margin="5"
+                           d:ItemsSource="{d:DesignData Source=/Resources/DesignTimeData.xaml}"
+                           ItemsSource="{Binding RuntimeItems}"/>
+                    
+                    <TextBlock Text="上面的ListBox在设计时显示示例数据，运行时使用ViewModel中的数据"
+                             Margin="5,5,5,10"/>
+                    
+                    <TextBlock Text="设计时字体大小:" FontWeight="Bold" Margin="5,0"/>
+                    <TextBlock Text="这个文本在设计时有特殊字体大小" 
+                             d:FontSize="24" Margin="5"
+                             ToolTip="在设计器中，这个文本应该显示为24pt"/>
+                </StackPanel>
+            </GroupBox>
+            
+            <!-- 4. 代码中定义和访问资源 -->
+            <GroupBox Header="4. 代码中操作资源" Style="{DynamicResource GroupBoxStyle}">
+                <StackPanel Margin="10">
+                    <TextBlock Text="资源可以在代码中动态创建和访问" 
+                             FontWeight="Bold" Margin="0,0,0,10"/>
+                    
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <Button x:Name="CreateResourceButton" Content="创建资源" 
+                              Style="{DynamicResource BaseButtonStyle}" Margin="0,0,10,0"
+                              Click="CreateResourceButton_Click"/>
+                        
+                        <Button x:Name="UseResourceButton" Content="使用资源" 
+                              Style="{DynamicResource BaseButtonStyle}" Margin="0,0,10,0"
+                              Click="UseResourceButton_Click"/>
+                        
+                        <Rectangle x:Name="ResourceDisplay" Width="30" Height="30" 
+                                 Stroke="Black" StrokeThickness="1"/>
+                    </StackPanel>
+                    
+                    <Separator Margin="5,10"/>
+                    
+                    <TextBlock Text="资源创建和访问结果:" FontWeight="Bold" Margin="5"/>
+                    <TextBlock x:Name="ResourceResult" Text="请点击上面的按钮测试资源操作" Margin="5"/>
+                </StackPanel>
+            </GroupBox>
+        </StackPanel>
+    </ScrollViewer>
+</Page> 
