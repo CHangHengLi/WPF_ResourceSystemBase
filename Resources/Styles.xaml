@@ -224,61 +224,139 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Padding" Value="5,3" />
         <Setter Property="Margin" Value="5" />
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto" />
+        <Setter Property="ScrollViewer.CanContentScroll" Value="True" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ComboBox">
                     <Grid>
-                        <Border x:Name="border" Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="2">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <ContentPresenter Grid.Column="0"
-                                                  IsHitTestVisible="False" 
-                                                  Margin="{TemplateBinding Padding}"
-                                                  Content="{TemplateBinding SelectionBoxItem}"
-                                                  ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                                  ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                                  VerticalAlignment="Center" />
-                                <Path Grid.Column="1" 
-                                      Data="M0,0 L4,4 L8,0 Z" 
-                                      Fill="{DynamicResource PrimaryTextBrush}"
-                                      HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"
-                                      Margin="0,0,8,0"/>
-                            </Grid>
-                        </Border>
+                        <ToggleButton x:Name="ToggleButton" 
+                                      BorderBrush="{TemplateBinding BorderBrush}"
+                                      BorderThickness="{TemplateBinding BorderThickness}"
+                                      Background="{TemplateBinding Background}"
+                                      Focusable="false"
+                                      IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                      ClickMode="Press">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border x:Name="templateRoot" 
+                                            Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            CornerRadius="2">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <ContentPresenter Grid.Column="0"
+                                                          Margin="{TemplateBinding Padding}"
+                                                          HorizontalAlignment="Left"
+                                                          VerticalAlignment="Center" />
+                                            <Path Grid.Column="1" 
+                                                  x:Name="arrow"
+                                                  Data="M0,0 L4,4 L8,0 Z" 
+                                                  Fill="{DynamicResource PrimaryTextBrush}"
+                                                  HorizontalAlignment="Center"
+                                                  VerticalAlignment="Center"
+                                                  Margin="0,0,8,0"/>
+                                        </Grid>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="templateRoot" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}" />
+                                        </Trigger>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="templateRoot" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Content="{TemplateBinding SelectionBoxItem}"
+                                          ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                          ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                          IsHitTestVisible="False">
+                            <ContentPresenter.Resources>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                                </Style>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
                         <Popup x:Name="PART_Popup" 
                                AllowsTransparency="True"
-                               IsOpen="{TemplateBinding IsDropDownOpen}"
+                               IsOpen="{Binding Path=IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
                                Placement="Bottom"
-                               PlacementTarget="{Binding ElementName=border}"
+                               PlacementTarget="{Binding ElementName=ToggleButton}"
+                               PopupAnimation="Slide"
                                StaysOpen="False">
-                            <Border Background="{DynamicResource ContentBackgroundBrush}"
+                            <Border x:Name="dropDownBorder" 
+                                    Background="{DynamicResource ContentBackgroundBrush}"
                                     BorderBrush="{DynamicResource BorderBrush}"
                                     BorderThickness="1"
                                     CornerRadius="2"
+                                    MinWidth="{Binding ActualWidth, ElementName=ToggleButton}"
+                                    HorizontalAlignment="Stretch"
                                     Margin="0,1,0,0">
-                                <ScrollViewer SnapsToDevicePixels="True" 
-                                              MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                    <ItemsPresenter KeyboardNavigation.DirectionalNavigation="Contained" />
+                                <ScrollViewer x:Name="DropDownScrollViewer" 
+                                              Margin="0"
+                                              MaxHeight="{TemplateBinding MaxDropDownHeight}"
+                                              MinHeight="60">
+                                    <ItemsPresenter x:Name="ItemsPresenter" 
+                                                   KeyboardNavigation.DirectionalNavigation="Contained"/>
                                 </ScrollViewer>
                             </Border>
                         </Popup>
                     </Grid>
                     <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}" />
-                        </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value="0.5" />
                         </Trigger>
-                        <Trigger Property="IsDropDownOpen" Value="True">
-                            <Setter TargetName="border" Property="BorderBrush" Value="{DynamicResource PrimaryBrush}" />
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsEditable" Value="True">
+                <Setter Property="IsTabStop" Value="False" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+    
+    <!-- 下拉框项样式 -->
+    <Style x:Key="ComboBoxItemStyle" TargetType="ComboBoxItem">
+        <Setter Property="Padding" Value="5,3" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="Width" Value="Auto" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ComboBoxItem">
+                    <Border x:Name="Bd" 
+                            Background="{TemplateBinding Background}" 
+                            BorderThickness="0"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AlternateBackgroundBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Bd" Property="Background" Value="{DynamicResource PrimaryBrush}" />
+                            <Setter Property="Foreground" Value="{DynamicResource HeaderTextBrush}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

@@ -4,9 +4,14 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WPFThemingDemo.Views"
+      xmlns:vm="clr-namespace:WPFThemingDemo.ViewModels"
       mc:Ignorable="d" 
       d:DesignHeight="600" d:DesignWidth="800"
       Title="主题演示">
+
+    <Page.DataContext>
+        <vm:ThemesDemoViewModel />
+    </Page.DataContext>
 
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid Margin="20">
@@ -52,12 +57,37 @@
                             <CheckBox Content="禁用选项" Style="{DynamicResource CheckBoxStyle}" IsEnabled="False"/>
                         </StackPanel>
                         
-                        <Label Content="组合框" Style="{DynamicResource LabelStyle}" Margin="0,15,0,0"/>
-                        <ComboBox Style="{DynamicResource ComboBoxStyle}">
-                            <ComboBoxItem Content="选项1"/>
-                            <ComboBoxItem Content="选项2"/>
-                            <ComboBoxItem Content="选项3"/>
-                        </ComboBox>
+                        <Label Content="字符串组合框" Style="{DynamicResource LabelStyle}" Margin="0,15,0,0"/>
+                        <ComboBox Style="{DynamicResource ComboBoxStyle}" 
+                                  ItemsSource="{Binding ComboItems}" 
+                                  SelectedIndex="0" 
+                                  Margin="0,5,0,10"
+                                  ItemContainerStyle="{StaticResource ComboBoxItemStyle}"/>
+                        
+                        <Label Content="对象组合框" Style="{DynamicResource LabelStyle}" Margin="0,0,0,0"/>
+                        <ComboBox Style="{DynamicResource ComboBoxStyle}" 
+                                  ItemsSource="{Binding ComboItemModels}" 
+                                  DisplayMemberPath="Name"
+                                  SelectedValuePath="Id"
+                                  SelectedItem="{Binding SelectedComboItem}" 
+                                  Margin="0,5,0,10"
+                                  ItemContainerStyle="{StaticResource ComboBoxItemStyle}"/>
+                        
+                        <StackPanel Orientation="Horizontal" Margin="0,5,0,10">
+                            <TextBlock Text="当前选中：" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding SelectedComboItem.Name}" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                            <TextBlock Text=" (ID: " VerticalAlignment="Center" Margin="5,0,0,0"/>
+                            <TextBlock Text="{Binding SelectedComboItem.Id}" VerticalAlignment="Center"/>
+                            <TextBlock Text=")" VerticalAlignment="Center"/>
+                        </StackPanel>
+                        
+                        <Label Content="禁用组合框" Style="{DynamicResource LabelStyle}" Margin="0,5,0,0"/>
+                        <ComboBox Style="{DynamicResource ComboBoxStyle}" 
+                                  ItemsSource="{Binding ComboItems}" 
+                                  SelectedIndex="0" 
+                                  IsEnabled="False" 
+                                  Margin="0,5,0,0"
+                                  ItemContainerStyle="{StaticResource ComboBoxItemStyle}"/>
                     </StackPanel>
                 </GroupBox>
             </StackPanel>
