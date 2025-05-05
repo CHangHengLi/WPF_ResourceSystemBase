@@ -1,0 +1,27 @@
+﻿<Application x:Class="WPFThemingDemo.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:WPFThemingDemo"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- 资源加载顺序非常重要 -->
+                <!-- 1. 基础颜色定义 -->
+                <ResourceDictionary Source="/WPFThemingDemo;component/Resources/Colors.xaml"/>
+                
+                <!-- 2. 当前主题颜色覆盖 -->
+                <ResourceDictionary Source="/WPFThemingDemo;component/Resources/Themes/Light.xaml"/>
+                
+                <!-- 3. 笔刷资源（依赖于颜色） -->
+                <ResourceDictionary Source="/WPFThemingDemo;component/Resources/Brushes.xaml"/>
+                
+                <!-- 4. 样式（依赖于笔刷） -->
+                <ResourceDictionary Source="/WPFThemingDemo;component/Resources/Styles.xaml"/>
+                
+                <!-- 5. 转换器 -->
+                <ResourceDictionary Source="/WPFThemingDemo;component/Resources/Converters.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
